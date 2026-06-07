@@ -37,6 +37,12 @@ JSON output:
 issue-triage-helper --title "Token leak in logs" --body "secret is printed" --format json
 ```
 
+Comma-separated labels for automation:
+
+```bash
+issue-triage-helper --title "Token leak in logs" --body "secret is printed" --format labels
+```
+
 ## Why this exists
 
 Issue triage is repetitive but important maintainer work. This tool gives maintainers a transparent starting point while keeping the final decision human.

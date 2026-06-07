@@ -16,7 +16,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--title", required=True, help="Issue title")
     parser.add_argument("--body", default="", help="Issue body text")
     parser.add_argument("--body-file", help="Read issue body from a file")
-    parser.add_argument("--format", choices=("text", "json"), default="text")
+    parser.add_argument("--format", choices=("text", "json", "labels"), default="text")
     args = parser.parse_args(argv)
 
     body = args.body
@@ -28,7 +28,12 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     result = triage_issue(args.title, body)
-    print(_json(result) if args.format == "json" else _text(result))
+    if args.format == "json":
+        print(_json(result))
+    elif args.format == "labels":
+        print(_labels(result))
+    else:
+        print(_text(result))
     return 0
 
 
@@ -54,6 +59,10 @@ def _json(result: TriageResult) -> str:
         },
         indent=2,
     )
+
+
+def _labels(result: TriageResult) -> str:
+    return ",".join(result.labels)
 
 
 if __name__ == "__main__":
