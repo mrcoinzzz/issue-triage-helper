@@ -10,6 +10,7 @@ It is designed for open-source maintainers who want a quick, local, dependency-l
 - Whether an issue looks like a good first issue
 - Practical next actions for maintainers
 - JSON output for automation
+- GitHub Actions-compatible output files
 
 The first version is rule-based and does not need network access or API keys.
 
@@ -41,6 +42,12 @@ Comma-separated labels for automation:
 
 ```bash
 issue-triage-helper --title "Token leak in logs" --body "secret is printed" --format labels
+```
+
+Write outputs for a GitHub Actions step:
+
+```bash
+issue-triage-helper --title "Crash on startup" --body-file issue.md --github-output "$GITHUB_OUTPUT"
 ```
 
 ## Why this exists

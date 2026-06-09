@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added `--github-output` for GitHub Actions-compatible labels, confidence, and actions
 - Added comma-separated label output with `--format labels`
 
 ## 0.1.0

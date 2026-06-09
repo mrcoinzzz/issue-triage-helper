@@ -13,3 +13,27 @@ def test_cli_can_output_comma_separated_labels(capsys) -> None:
 
     assert exit_code == 0
     assert capsys.readouterr().out.strip() == "security"
+
+
+def test_cli_can_write_github_actions_output(tmp_path, capsys) -> None:
+    output_path = tmp_path / "github-output.txt"
+
+    exit_code = main(
+        [
+            "--title",
+            "Crash on startup",
+            "--body",
+            "The app throws an exception",
+            "--format",
+            "labels",
+            "--github-output",
+            str(output_path),
+        ]
+    )
+
+    assert exit_code == 0
+    assert "bug" in capsys.readouterr().out
+    output = output_path.read_text(encoding="utf-8")
+    assert "labels=bug,needs reproduction" in output
+    assert "confidence=high" in output
+    assert "actions=" in output

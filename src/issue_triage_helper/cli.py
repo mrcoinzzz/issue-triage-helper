@@ -17,6 +17,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--body", default="", help="Issue body text")
     parser.add_argument("--body-file", help="Read issue body from a file")
     parser.add_argument("--format", choices=("text", "json", "labels"), default="text")
+    parser.add_argument("--github-output", help="Write labels, confidence, and actions to a GitHub Actions output file")
     args = parser.parse_args(argv)
 
     body = args.body
@@ -28,6 +29,13 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     result = triage_issue(args.title, body)
+    if args.github_output:
+        try:
+            _write_github_output(Path(args.github_output), result)
+        except OSError as error:
+            print(f"Could not write GitHub output: {error}", file=sys.stderr)
+            return 2
+
     if args.format == "json":
         print(_json(result))
     elif args.format == "labels":
@@ -63,6 +71,16 @@ def _json(result: TriageResult) -> str:
 
 def _labels(result: TriageResult) -> str:
     return ",".join(result.labels)
+
+
+def _write_github_output(path: Path, result: TriageResult) -> None:
+    lines = [
+        f"labels={_labels(result)}",
+        f"confidence={result.confidence}",
+        f"actions={json.dumps(list(result.actions))}",
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":
