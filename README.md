@@ -50,6 +50,8 @@ Write outputs for a GitHub Actions step:
 issue-triage-helper --title "Crash on startup" --body-file issue.md --github-output "$GITHUB_OUTPUT"
 ```
 
+This repository includes an example workflow at `.github/workflows/issue-triage.yml` that runs on issue events and adds suggested labels/actions to the job summary.
+
 ## Why this exists
 
 Issue triage is repetitive but important maintainer work. This tool gives maintainers a transparent starting point while keeping the final decision human.
