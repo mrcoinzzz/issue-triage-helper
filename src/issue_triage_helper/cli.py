@@ -16,7 +16,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--title", required=True, help="Issue title")
     parser.add_argument("--body", default="", help="Issue body text")
     parser.add_argument("--body-file", help="Read issue body from a file")
-    parser.add_argument("--format", choices=("text", "json", "labels"), default="text")
+    parser.add_argument("--format", choices=("text", "json", "labels", "markdown"), default="text")
     parser.add_argument("--github-output", help="Write labels, confidence, and actions to a GitHub Actions output file")
     args = parser.parse_args(argv)
 
@@ -40,6 +40,8 @@ def main(argv: list[str] | None = None) -> int:
         print(_json(result))
     elif args.format == "labels":
         print(_labels(result))
+    elif args.format == "markdown":
+        print(_markdown(result))
     else:
         print(_text(result))
     return 0
@@ -71,6 +73,24 @@ def _json(result: TriageResult) -> str:
 
 def _labels(result: TriageResult) -> str:
     return ",".join(result.labels)
+
+
+def _markdown(result: TriageResult) -> str:
+    lines = [
+        "## Issue triage suggestion",
+        "",
+        f"**Confidence:** {result.confidence}",
+        "",
+        f"**Labels:** {', '.join(result.labels)}",
+        "",
+        "### Next actions",
+        "",
+    ]
+    if result.actions:
+        lines.extend(f"- {action}" for action in result.actions)
+    else:
+        lines.append("- No specific action suggested.")
+    return "\n".join(lines)
 
 
 def _write_github_output(path: Path, result: TriageResult) -> None:

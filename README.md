@@ -38,6 +38,12 @@ JSON output:
 issue-triage-helper --title "Token leak in logs" --body "secret is printed" --format json
 ```
 
+Markdown output:
+
+```bash
+issue-triage-helper --title "Docs typo" --body "Small README spelling issue" --format markdown
+```
+
 Comma-separated labels for automation:
 
 ```bash
@@ -50,7 +56,7 @@ Write outputs for a GitHub Actions step:
 issue-triage-helper --title "Crash on startup" --body-file issue.md --github-output "$GITHUB_OUTPUT"
 ```
 
-This repository includes an example workflow at `.github/workflows/issue-triage.yml` that runs on issue events and adds suggested labels/actions to the job summary.
+This repository includes an example workflow at `.github/workflows/issue-triage.yml` that runs on issue events and adds a Markdown triage summary to the job summary.
 
 ## Why this exists
 

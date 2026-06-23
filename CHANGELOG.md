@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added Markdown triage output and updated the issue workflow summary
 - Added an example issue triage GitHub Actions workflow
 - Added `--github-output` for GitHub Actions-compatible labels, confidence, and actions
 - Added comma-separated label output with `--format labels`

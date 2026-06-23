@@ -37,3 +37,13 @@ def test_cli_can_write_github_actions_output(tmp_path, capsys) -> None:
     assert "labels=bug,needs reproduction" in output
     assert "confidence=high" in output
     assert "actions=" in output
+
+
+def test_cli_can_output_markdown(capsys) -> None:
+    exit_code = main(["--title", "Docs typo", "--body", "Small README spelling issue", "--format", "markdown"])
+
+    assert exit_code == 0
+    output = capsys.readouterr().out
+    assert "## Issue triage suggestion" in output
+    assert "**Labels:** documentation, good first issue" in output
+    assert "### Next actions" in output

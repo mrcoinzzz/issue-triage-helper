@@ -27,18 +27,8 @@ jobs:
           issue-triage-helper \
             --title "$ISSUE_TITLE" \
             --body-file /tmp/issue-body.md \
-            --format json \
-            --github-output "$GITHUB_OUTPUT" > /tmp/triage.json
+            --format markdown \
+            --github-output "$GITHUB_OUTPUT" > /tmp/triage.md
       - name: Add summary
         run: |
-          {
-            echo "## Issue triage suggestion"
-            echo
-            echo "**Labels:** ${{ steps.triage.outputs.labels }}"
-            echo
-            echo "**Confidence:** ${{ steps.triage.outputs.confidence }}"
-            echo
-            echo '```json'
-            cat /tmp/triage.json
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          cat /tmp/triage.md >> "$GITHUB_STEP_SUMMARY"
