@@ -44,6 +44,12 @@ Markdown output:
 issue-triage-helper --title "Docs typo" --body "Small README spelling issue" --format markdown
 ```
 
+Write a triage report to a file:
+
+```bash
+issue-triage-helper --title "Docs typo" --body-file issue.md --format markdown --output triage-report.md
+```
+
 Comma-separated labels for automation:
 
 ```bash

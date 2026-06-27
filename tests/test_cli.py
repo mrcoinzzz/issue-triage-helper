@@ -47,3 +47,26 @@ def test_cli_can_output_markdown(capsys) -> None:
     assert "## Issue triage suggestion" in output
     assert "**Labels:** documentation, good first issue" in output
     assert "### Next actions" in output
+
+
+def test_cli_can_write_triage_report_to_file(tmp_path, capsys) -> None:
+    output_path = tmp_path / "reports" / "triage.md"
+
+    exit_code = main(
+        [
+            "--title",
+            "Docs typo",
+            "--body",
+            "Small README spelling issue",
+            "--format",
+            "markdown",
+            "--output",
+            str(output_path),
+        ]
+    )
+
+    assert exit_code == 0
+    assert capsys.readouterr().out == ""
+    output = output_path.read_text(encoding="utf-8")
+    assert "## Issue triage suggestion" in output
+    assert "**Labels:** documentation, good first issue" in output

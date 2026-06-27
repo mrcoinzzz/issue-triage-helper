@@ -17,6 +17,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--body", default="", help="Issue body text")
     parser.add_argument("--body-file", help="Read issue body from a file")
     parser.add_argument("--format", choices=("text", "json", "labels", "markdown"), default="text")
+    parser.add_argument("--output", help="Write the triage report to a file")
     parser.add_argument("--github-output", help="Write labels, confidence, and actions to a GitHub Actions output file")
     args = parser.parse_args(argv)
 
@@ -37,13 +38,24 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     if args.format == "json":
-        print(_json(result))
+        output = _json(result)
     elif args.format == "labels":
-        print(_labels(result))
+        output = _labels(result)
     elif args.format == "markdown":
-        print(_markdown(result))
+        output = _markdown(result)
     else:
-        print(_text(result))
+        output = _text(result)
+
+    if args.output:
+        try:
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(output + "\n", encoding="utf-8")
+        except OSError as error:
+            print(f"Could not write triage report: {error}", file=sys.stderr)
+            return 2
+    else:
+        print(output)
     return 0
 
 
