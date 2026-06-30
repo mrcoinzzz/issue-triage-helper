@@ -70,3 +70,23 @@ def test_cli_can_write_triage_report_to_file(tmp_path, capsys) -> None:
     output = output_path.read_text(encoding="utf-8")
     assert "## Issue triage suggestion" in output
     assert "**Labels:** documentation, good first issue" in output
+
+
+def test_cli_requires_title_or_issue_url(capsys) -> None:
+    exit_code = main(["--body", "No title"])
+
+    assert exit_code == 2
+    assert "Provide --title or --issue-url" in capsys.readouterr().err
+
+
+def test_cli_can_read_issue_url(monkeypatch, capsys) -> None:
+    class Issue:
+        title = "Docs typo"
+        body = "Small README spelling issue"
+
+    monkeypatch.setattr("issue_triage_helper.cli.fetch_issue", lambda url: Issue())
+
+    exit_code = main(["--issue-url", "https://github.com/example/project/issues/42", "--format", "labels"])
+
+    assert exit_code == 0
+    assert capsys.readouterr().out.strip() == "documentation,good first issue"

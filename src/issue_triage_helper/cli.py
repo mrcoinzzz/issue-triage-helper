@@ -5,6 +5,7 @@ import json
 import sys
 from pathlib import Path
 
+from .github import fetch_issue
 from .triage import TriageResult, triage_issue
 
 
@@ -13,15 +14,30 @@ def main(argv: list[str] | None = None) -> int:
         prog="issue-triage-helper",
         description="Suggest labels and next actions for an open-source issue.",
     )
-    parser.add_argument("--title", required=True, help="Issue title")
+    parser.add_argument("--title", help="Issue title")
     parser.add_argument("--body", default="", help="Issue body text")
     parser.add_argument("--body-file", help="Read issue body from a file")
+    parser.add_argument("--issue-url", help="GitHub issue URL to read with gh issue view")
     parser.add_argument("--format", choices=("text", "json", "labels", "markdown"), default="text")
     parser.add_argument("--output", help="Write the triage report to a file")
     parser.add_argument("--github-output", help="Write labels, confidence, and actions to a GitHub Actions output file")
     args = parser.parse_args(argv)
 
+    title = args.title
     body = args.body
+    if args.issue_url:
+        try:
+            issue = fetch_issue(args.issue_url)
+        except Exception as error:
+            print(f"Could not read GitHub issue: {error}", file=sys.stderr)
+            return 2
+        title = issue.title
+        body = issue.body
+
+    if not title:
+        print("Provide --title or --issue-url", file=sys.stderr)
+        return 2
+
     if args.body_file:
         try:
             body = Path(args.body_file).read_text(encoding="utf-8")
@@ -29,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Could not read body file: {error}", file=sys.stderr)
             return 2
 
-    result = triage_issue(args.title, body)
+    result = triage_issue(title, body)
     if args.github_output:
         try:
             _write_github_output(Path(args.github_output), result)

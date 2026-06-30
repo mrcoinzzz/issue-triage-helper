@@ -32,6 +32,12 @@ Read the body from a file:
 issue-triage-helper --title "Docs typo" --body-file issue.md
 ```
 
+Read a GitHub issue with the GitHub CLI:
+
+```bash
+issue-triage-helper --issue-url https://github.com/owner/repo/issues/123
+```
+
 JSON output:
 
 ```bash
@@ -70,7 +76,6 @@ Issue triage is repetitive but important maintainer work. This tool gives mainta
 
 ## Roadmap
 
-- GitHub issue URL input
 - Batch triage for local issue exports
 - Configurable label names
 - GitHub Actions annotations
